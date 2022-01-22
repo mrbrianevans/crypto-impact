@@ -12,7 +12,8 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
 
   async function callApi(walletAddress: string) {
     setLoading(true)
-    const res = await fetch('http://localhost:5000/calculateTransactionCost?' + new URLSearchParams({walletAddress}))
+    const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : ''
+    const res = await fetch(baseUrl + '/calculateTransactionCost?' + new URLSearchParams({walletAddress}))
       .then(r => r.json())
       .finally(() => setLoading(false))
 
