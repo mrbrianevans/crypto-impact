@@ -1,4 +1,4 @@
-import {Address, Transaction} from "common/types/Blockchain";
+import {Address, Block, Transaction} from "common/types/Blockchain";
 import {getEnergyRate, getTransactions} from "./costApis";
 
 /**
@@ -29,6 +29,10 @@ function findTransactionCost(transaction: Transaction): number {
     let energyPerTransaction = getEnergyPerTransaction(energyRate, transaction.block);
 
     return (energyPerTransaction*energyCost) + costProportion*findEnergyCost(transaction.sender[0]);
+}
+
+function getEnergyPerTransaction(energyrate: number, block: Block): number{
+    return energyrate/block.nTx;
 }
 
 // Implement getEnergyPerTransaction which takes an energyRate, gets the block's transaction number and return the result
