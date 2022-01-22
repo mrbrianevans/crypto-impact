@@ -6,7 +6,5 @@ export interface TransactionWithStats extends Transaction {
 
     date: Date;
 
-    block: Block;
-
-    sender: Address[];
+    sender: string[];
 }
