@@ -31,8 +31,8 @@ function findTransactionCost(transaction: Transaction): number {
     return (energyPerTransaction*energyCost) + costProportion*findEnergyCost(transaction.sender[0]);
 }
 
-function getEnergyPerTransaction(energyrate: number, block: Block): number{
-    return energyrate/block.nTx;
+function getEnergyPerTransaction(energyRate: number, block: Block): number{
+    return energyRate/block.nTx;
 }
 
 // Implement getEnergyPerTransaction which takes an energyRate, gets the block's transaction number and return the result
