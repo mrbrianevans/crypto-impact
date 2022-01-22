@@ -1,32 +1,62 @@
 import React, {useState} from 'react';
 import styles from './AddWalletScreen.module.css'
-import {Button, Card, Input} from 'antd';
-type AddWalletScreenProps = {
+import {Button, Card, Divider, Empty, Input, Space} from 'antd';
+import Title from "antd/es/typography/Title";
 
-}
-
+const {Search} = Input;
+type AddWalletScreenProps = {}
 const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
-  const [walletAddress, setWalletAddress] = useState<string>('')
-  const [apiResponse, setApiResponse] = useState<any>(null)
-  async function callApi(){
-    const res = await fetch('http://localhost:5000/calculateTransactionCost?'+new URLSearchParams({walletAddress})).then(r=>r.text())
-    console.log('API response',res)
+  const [apiResponse, setApiResponse] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  async function callApi(walletAddress: string) {
+    setLoading(true)
+    const res = await fetch('http://localhost:5000/calculateTransactionCost?' + new URLSearchParams({walletAddress}))
+      .then(r => r.text())
+      .finally(() => setLoading(false))
+
+    console.log('API response', res)
     setApiResponse(res)
   }
 
   return (
-    <div>
-      <p>Please put your wallet address below</p>
-      <Input value={walletAddress} onInput={e => setWalletAddress(e.currentTarget.value)}/>
-      <Button type="primary" onClick={callApi}>Submit</Button>
+    <div className={styles.content}>
+      <Title level={3}>Please put your wallet address below</Title>
 
-      {apiResponse &&
-      <Card title={'API response'}>
+      <Search size="large" prefix={'#'} placeholder={'Wallet address'} loading={loading} onSearch={callApi}
+              allowClear enterButton={'Get impact'} showCount minLength={26}/>
+      <Divider/>
+      {apiResponse && <Space direction={'vertical'}>
+          <Space direction={'horizontal'} align={'center'}>
+              <Card title={'Impact'} style={{width: 300}}>
         <pre>
             {JSON.stringify(apiResponse, null, 2)}
         </pre>
-      </Card>
+              </Card>
+              <Card title={'Impact'} style={{width: 300}}>
+        <pre>
+            {JSON.stringify(apiResponse, null, 2)}
+        </pre>
+              </Card>
+              <Card title={'Impact'} style={{width: 300}}>
+        <pre>
+            {JSON.stringify(apiResponse, null, 2)}
+        </pre>
+              </Card>
+
+          </Space>
+          <Card title={'Impact'}>
+        <pre>
+      {JSON.stringify(apiResponse, null, 2)}
+        </pre>
+          </Card>
+
+          <Button danger onClick={()=>setApiResponse(null)}>Clear</Button>
+      </Space>
       }
+
+
+      {!apiResponse && <Empty />}
     </div>
   );
 };
