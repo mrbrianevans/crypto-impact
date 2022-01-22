@@ -9,6 +9,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
+    "axios": "^0.25.0",
     "common": "file:../common",
     "express": "^4.17.2",
     "ts-node": "^10.4.0",

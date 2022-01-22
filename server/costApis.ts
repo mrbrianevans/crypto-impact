@@ -1,14 +1,20 @@
 import {Address, Block, Transaction} from "common/types/Blockchain";
+import axios from "axios";
 
 
-export function getTransactions(address: Address): Transaction[] {
-    return [];
+export async function getTransactions(address: Address): Promise<Transaction[]> {
+    return (await axios.get<Address>("https://blockchain.info/rawaddr/"+address)).data.txs;
 }
 
 export function getEnergyRate(date: Date): number {
-    return 0;
+    // Should change this to read the energy rate from the csv
+    return 15.5; // GW
 }
 
-export function getBlockInformation(blockId: string): Block {
-    return {id: blockId, nTx: 1};
+export async function getBlockInformation(blockId: string): Promise<Block> {
+    return (await axios.get<Block>("https://blockchain.info/rawblock/"+blockId)).data;
+}
+
+export function getBlockSolvingTime(block: Block): number {
+    return 60*10; // 10 minutes placeholder
 }
