@@ -1,0 +1,8 @@
+main.page{
+    max-width: 1200px;
+    box-shadow: 0 0 5px 4px #00000030;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 1rem;
+    background: whitesmoke;
+}
