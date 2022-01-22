@@ -2,6 +2,13 @@ import {Address, Block, Transaction} from "common/types/Blockchain";
 import axios from "axios";
 import {TransactionWithStats} from "common/types/BlockchainStats";
 
+import {parse} from 'csv-parse/sync';
+import * as fs from "fs";
+
+const energyDataset: Array<string> = parse(fs.readFileSync("./datasets/btc-energy-consumption.csv"), {
+    from_line: 3
+});
+
 const nowKey = "VpMADFdnjyLPT5cIqfYE82iwXNKsHGx0";
 
 export async function getAddress(address: string): Promise<Address> {
@@ -33,7 +40,7 @@ export async function getTransactionsWithStats(address: Address): Promise<Transa
         received: tx.vout.filter(vout => vout.addresses.includes(address.address))
             .reduce((prev,cur) => prev+parseInt(cur.value), 0) / 1000000,
         totalSent: tx.vout.reduce((prev, cur) => prev+parseInt(cur.value), 0) / 1000000,
-        date: new Date(),
+        date: new Date(tx.blockTime*1000),
         sender: tx.vin.reduce((prev,cur) => {
             for (let addr of cur.addresses) {
                 if (!prev.includes(addr)) prev.push(addr);
@@ -45,7 +52,15 @@ export async function getTransactionsWithStats(address: Address): Promise<Transa
 
 export function getEnergyRate(date: Date): number {
     // Should change this to read the energy rate from the csv
-    return 15.5; // GW
+    // return 15.5; // GW
+    console.log(date);
+    const datasetEntry = energyDataset.find(line => line[1] > date.toISOString());
+
+    if (datasetEntry == undefined) return 15.5;
+    else {
+        console.log("Dataset entry for energy rate found!", datasetEntry);
+        return Number(datasetEntry[4]);
+    }
 }
 
 // BTC.COM response format
