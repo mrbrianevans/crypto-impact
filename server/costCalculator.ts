@@ -1,20 +1,21 @@
-import {Address, Block, Transaction} from "common/types/Blockchain";
-import {getBlockSolvingTime, getEnergyRate, getTransactions} from "./costApis";
+import {Address, Block} from "common/types/Blockchain";
+import {getBlockSolvingTime, getEnergyRate, getTransactionsWithStats} from "./costApis";
+import {TransactionWithStats} from "common/types/BlockchainStats";
 
 /**
  * Takes an address, finds all transactions and returns the sum of their energy costs
  * @param address
  */
 const depthLimit = 20;
-export function findEnergyCost(address: Address, depth: number): number {
-    const transactions = getTransactions(address);
+export async function findEnergyCost(address: Address, depth: number): Promise<number> {
+    const transactions = await getTransactionsWithStats(address);
 
     let totalCost = 0;
     if(depth>depthLimit){
         return 0;
     }else {
         for (const transaction of transactions) {
-            const txCost = findTransactionCost(transaction, depth,size);
+            const txCost = findTransactionCost(transaction, depth, size);
             totalCost += txCost;
         }
         return totalCost;
@@ -22,7 +23,7 @@ export function findEnergyCost(address: Address, depth: number): number {
 
 }
 
-function findTransactionCost(transaction: Transaction, depth: number): number {
+function findTransactionCost(transaction: TransactionWithStats, depth: number): number {
 
     let energyCost = 1;
     let costProportion = transaction.received / transaction.totalSent;

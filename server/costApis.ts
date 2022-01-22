@@ -1,9 +1,14 @@
 import {Address, Block, Transaction} from "common/types/Blockchain";
 import axios from "axios";
+import {TransactionWithStats} from "common/types/BlockchainStats";
 
 
 export async function getTransactions(address: Address): Promise<Transaction[]> {
     return (await axios.get<Address>("https://blockchain.info/rawaddr/"+address)).data.txs;
+}
+
+export async function getTransactionsWithStats(address: Address): Promise<TransactionWithStats[]> {
+    return [];
 }
 
 export function getEnergyRate(date: Date): number {
