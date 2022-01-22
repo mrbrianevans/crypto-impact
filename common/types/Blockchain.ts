@@ -1,61 +1,89 @@
 export interface Address {
-    hash160: string;
+    page: number;
+    totalPages: number;
+    itemsOnPage: number;
     address: string;
-
-    n_tx: number;
-    n_unredeemed: number;
-
-    total_received: number;
-    total_sent: number;
-    final_balance: number;
-
-    txs: Transaction[];
+    balance: string;
+    totalReceived: string;
+    totalSent: string;
+    unconfirmedBalance: string;
+    unconfirmedTxs: number;
+    txs: number;
+    txids: string[];
 }
-export interface Transaction {
-    // sender: Address[];
-    //
-    // totalSent: number;
-    //
-    // received: number;
-    //
-    // date: Date;
-
-    // block: Block;
-
-    result: number;
-
-    hash: string;
-    ver: number;
-    vin_sz: number;
-    vout_sz: number;
-    lock_time: string;
-    size: number;
-    relayed_by: string;
-    block_height: number;
-    tx_index: string;
-    inputs: Input[];
-    out: Out[];
-}
-
-interface PrevOut {
-    addr: string;
-    value: string;
-    tx_index: string;
-    n: string;
-    spent: boolean;
-}
-
-interface Input {
-    prev_out: PrevOut;
-    script: string;
-}
-
-interface Out {
-    value: string;
-    addr: string;
+export interface Vin {
+    txid: string;
+    vout: number;
+    sequence: number;
     n: number;
-    spent: boolean;
-    script: string;
+    addresses: string[];
+    isAddress: boolean;
+    value: string;
+}
+
+export interface Vout {
+    value: string;
+    n: number;
+    hex: string;
+    addresses: string[];
+    isAddress: boolean;
+}
+
+export interface ScriptSig {
+    asm: string;
+    hex: string;
+}
+
+export interface Vin2 {
+    txid: string;
+    vout: number;
+    scriptSig: ScriptSig;
+    txinwitness: string[];
+    sequence: number;
+}
+
+export interface ScriptPubKey {
+    asm: string;
+    hex: string;
+    reqSigs: number;
+    type: string;
+    addresses: string[];
+}
+
+export interface Vout2 {
+    value: number;
+    n: number;
+    scriptPubKey: ScriptPubKey;
+}
+
+export interface CoinSpecificData {
+    txid: string;
+    hash: string;
+    version: number;
+    size: number;
+    vsize: number;
+    weight: number;
+    locktime: number;
+    vin: Vin2[];
+    vout: Vout2[];
+    hex: string;
+}
+
+export interface Transaction {
+    txid: string;
+    version: number;
+    lockTime: number;
+    vin: Vin[];
+    vout: Vout[];
+    blockHeight: number;
+    confirmations: number;
+    blockTime: number;
+    value: string;
+    valueIn: string;
+    fees: string;
+    hex: string;
+    rbf: boolean;
+    coinSpecificData: CoinSpecificData;
 }
 
 export interface Block {

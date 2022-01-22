@@ -14,7 +14,7 @@ app.get('/calculateTransactionCost',async (req, res)=>{
   const { walletAddress } = req.query // url will be like /calculateTransactionCost?walletAddress=alsdkfj
   // work out energy cost of wallet address
   const energyCost = await findEnergyCost(await getAddress(walletAddress as string), 1);
-  res.status(200).json(energyCost);
+  res.status(200).send(`${energyCost.toFixed(3)} kWh`);
 })
 
 app.listen(5000, ()=>console.log('API web server listening on http://localhost:5000'))

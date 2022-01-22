@@ -2,22 +2,44 @@ import {Address, Block, Transaction} from "common/types/Blockchain";
 import axios from "axios";
 import {TransactionWithStats} from "common/types/BlockchainStats";
 
+const nowKey = "VpMADFdnjyLPT5cIqfYE82iwXNKsHGx0";
+
 export async function getAddress(address: string): Promise<Address> {
-    return (await axios.get<Address>("https://blockchain.info/rawaddr/"+address)).data;
+    try {
+        return (await axios.get<Address>("https://btcbook.nownodes.io/api/v2/address/"+address, {
+            headers: {
+                "api-key": nowKey
+            }
+        })).data;
+    } catch (e) {
+        console.log(e, e.error)
+    }
 }
 
-export async function getTransactions(address: Address): Promise<Transaction[]> {
-    return address.txs;
+export async function getTransaction(txid: string): Promise<Transaction> {
+    return (await axios.get<Transaction>("https://btcbook.nownodes.io/api/v2/tx/"+txid, {
+        headers: {
+            "api-key": nowKey
+        }
+    })).data;
 }
 
 export async function getTransactionsWithStats(address: Address): Promise<TransactionWithStats[]> {
-    return address.txs.map(tx => ({
+    let txs = await Promise.all(address.txids.map(txid => getTransaction(txid)));
+
+    return txs.map(tx => ({
         ...tx,
 
-        received: tx.result / 1000000,
-        totalSent: tx.out.reduce((prev, cur) => prev+parseInt(cur.value), 0) / 1000000,
+        received: tx.vout.filter(vout => vout.addresses.includes(address.address))
+            .reduce((prev,cur) => prev+parseInt(cur.value), 0) / 1000000,
+        totalSent: tx.vout.reduce((prev, cur) => prev+parseInt(cur.value), 0) / 1000000,
         date: new Date(),
-        sender: tx.inputs.map(input => input.prev_out.addr),
+        sender: tx.vin.reduce((prev,cur) => {
+            for (let addr of cur.addresses) {
+                if (!prev.includes(addr)) prev.push(addr);
+            }
+            return prev;
+        }, []),
     }));
 }
 
