@@ -1,40 +1,38 @@
 import {Address, Block, Transaction} from "common/types/Blockchain";
-import {getEnergyRate, getTransactions} from "./costApis";
+import {getBlockSolvingTime, getEnergyRate, getTransactions} from "./costApis";
 
 /**
  * Takes an address, finds all transactions and returns the sum of their energy costs
  * @param address
  */
-export function findEnergyCost(address: Address): number {
+const depthLimit = 20;
+export function findEnergyCost(address: Address, depth: number): number {
     const transactions = getTransactions(address);
 
     let totalCost = 0;
-
-    for (const transaction of transactions) {
-        const txCost = findTransactionCost(transaction);
-
-        totalCost += txCost;
+    if(depth>depthLimit){
+        return 0;
+    }else {
+        for (const transaction of transactions) {
+            const txCost = findTransactionCost(transaction, depth,size);
+            totalCost += txCost;
+        }
+        return totalCost;
     }
 
-    return totalCost;
 }
 
-function findTransactionCost(transaction: Transaction): number {
+function findTransactionCost(transaction: Transaction, depth: number): number {
+
     let energyCost = 1;
-
     let costProportion = transaction.received / transaction.totalSent;
-
     let energyRate = getEnergyRate(transaction.date);
-
     let energyPerTransaction = getEnergyPerTransaction(energyRate, transaction.block);
+    return (energyPerTransaction*energyCost) + costProportion*findEnergyCost(transaction.sender[0], depth+1);
 
-    return (energyPerTransaction*energyCost) + costProportion*findEnergyCost(transaction.sender[0]);
 }
 
 function getEnergyPerTransaction(energyRate: number, block: Block): number{
-    return energyRate/block.nTx;
+    return energyRate*getBlockSolvingTime(block)/block.n_tx;
 }
-
-// Implement getEnergyPerTransaction which takes an energyRate, gets the block's transaction number and return the result
-// of energyRate / #blocks
 
