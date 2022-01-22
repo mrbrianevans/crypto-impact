@@ -1,4 +1,4 @@
-import {Transaction} from "./Blockchain";
+import {CoinSpecificData, Transaction, Vin, Vin2, Vout, Vout2} from "./Blockchain";
 
 export interface ImpactResponse {
     totalCostTxs: number;
@@ -22,4 +22,39 @@ export interface TransactionCost {
     // Total impact in kwh with the cost proportionality weights applied
     // This is the main indicator and the default calculation to make
     relativeImpactKwh: number;
+}
+
+export const impactResponseSample: ImpactResponse = {
+    costBreakDown: [{
+        transaction: {
+            txid: 'txid',
+            version: 0,
+            lockTime: Date.now(),
+            vin: [],
+            vout: [],
+            blockHeight: 0,
+            confirmations: 0,
+            blockTime: 0,
+            value: 'string',
+            valueIn: 'string',
+            fees: 'string',
+            hex: 'string',
+            rbf: false,
+            coinSpecificData: {
+                txid: 'string',
+                hash: 'string',
+                version: 0,
+                size: 0,
+                vsize: 0,
+                weight: 0,
+                locktime: 0,
+                vin: [],
+                vout: [],
+                hex: 'string',
+            },
+        },
+        impactTxs: Math.random(),
+        relativeImpactTxs: Math.random(),
+        relativeImpactKwh: Math.random()
+    }], totalCostKwh: Math.random(), totalCostTxs: Math.round(Math.random() * 10)
 }
