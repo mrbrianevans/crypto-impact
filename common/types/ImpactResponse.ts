@@ -8,7 +8,6 @@ export interface ImpactResponse {
 }
 
 export interface TransactionCost {
-    txid: string;
     transaction: Transaction;
 
     impactTxs: number;
