@@ -36,8 +36,8 @@ async function findTransactionCost(transaction: TransactionWithStats, depth: num
     let energyRate = getEnergyRate(transaction.date);
 
     let energyPerTransaction = await getEnergyPerTransaction(energyRate, transaction.block_height);
-    return (energyPerTransaction * energyCost) + costProportion
-        * await findEnergyCost(await getAddress(transaction.sender[0]), depth + 1, costPC);
+    return (energyPerTransaction * energyCost) + (costProportion
+        * await findEnergyCost(await getAddress(transaction.sender[0]), depth + 1, costPC));
 
 }
 

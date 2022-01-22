@@ -13,7 +13,8 @@ export async function getTransactions(address: Address): Promise<Transaction[]> 
 export async function getTransactionsWithStats(address: Address): Promise<TransactionWithStats[]> {
     return address.txs.map(tx => ({
         ...tx,
-        received: parseInt(tx.out.find(out => out.addr == address.address).value) / 1000000,
+
+        received: tx.result / 1000000,
         totalSent: tx.out.reduce((prev, cur) => prev+parseInt(cur.value), 0) / 1000000,
         date: new Date(),
         sender: tx.inputs.map(input => input.prev_out.addr),
@@ -25,9 +26,23 @@ export function getEnergyRate(date: Date): number {
     return 15.5; // GW
 }
 
+// BTC.COM response format
+type BlockResponse = Block;
 export async function getBlockInformation(blockId: number|string): Promise<Block> {
-    return (await axios.get<Block>("https://blockchain.info/rawblock/"+blockId)).data;
+    // await new Promise(resolve => setTimeout(resolve, 1000))
+    // let res = (await axios.get<BlockResponse>("https://api.blockcypher.com/v1/btc/main/blocks/" + blockId)).data;
+    // console.log(res);
+    // return res;
+    return {
+        n_tx: 1700,
+        height: Number(blockId),
+        hash: blockId.toString()
+    }
 }
+
+// export async function getBlockInformation(blockId: number|string): Promise<Block> {
+//     return (await axios.get<Block>("https://blockchain.info/rawblock/"+blockId)).data;
+// }
 
 export function getBlockSolvingTime(block: Block): number {
     return 60*10; // 10 minutes placeholder
