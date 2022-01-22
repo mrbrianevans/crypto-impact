@@ -1,5 +1,11 @@
 import {Address, Block} from "common/types/Blockchain";
-import {getBlockSolvingTime, getEnergyRate, getTransactionsWithStats} from "./costApis";
+import {
+    getAddress,
+    getBlockInformation,
+    getBlockSolvingTime,
+    getEnergyRate,
+    getTransactionsWithStats
+} from "./costApis";
 import {TransactionWithStats} from "common/types/BlockchainStats";
 
 /**
@@ -8,8 +14,8 @@ import {TransactionWithStats} from "common/types/BlockchainStats";
  */
 const depthLimit = 10;
 export async function findEnergyCost(address: Address, depth: number): Promise<number> {
-    const transactions = await getTransactionsWithStats(address);
-
+    const transactions = (await getTransactionsWithStats(address)).filter(tx => tx.result > 0);
+    
     let totalCost = 0;
     if(depth>depthLimit){
         return 0;
@@ -27,12 +33,14 @@ async function findTransactionCost(transaction: TransactionWithStats, depth: num
     let energyCost = 1;
     let costProportion = transaction.received / transaction.totalSent;
     let energyRate = getEnergyRate(transaction.date);
-    let energyPerTransaction = getEnergyPerTransaction(energyRate, transaction.block);
-    return (energyPerTransaction * energyCost) + costProportion * await findEnergyCost(transaction.sender[0], depth + 1);
+    let energyPerTransaction = await getEnergyPerTransaction(energyRate, transaction.block_height);
+    return (energyPerTransaction * energyCost) + costProportion
+        * await findEnergyCost(await getAddress(transaction.sender[0]), depth + 1);
 
 }
 
-function getEnergyPerTransaction(energyRate: number, block: Block): number{
+async function getEnergyPerTransaction(energyRate: number, block_height: number): Promise<number> {
+    let block: Block = await getBlockInformation(block_height);
     return energyRate*getBlockSolvingTime(block)/block.n_tx;
 }
 

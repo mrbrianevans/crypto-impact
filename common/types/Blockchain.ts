@@ -22,6 +22,8 @@ export interface Transaction {
 
     // block: Block;
 
+    result: number;
+
     hash: string;
     ver: number;
     vin_sz: number;
@@ -36,10 +38,11 @@ export interface Transaction {
 }
 
 interface PrevOut {
-    hash: string;
+    addr: string;
     value: string;
     tx_index: string;
     n: string;
+    spent: boolean;
 }
 
 interface Input {
@@ -49,7 +52,9 @@ interface Input {
 
 interface Out {
     value: string;
-    hash: string;
+    addr: string;
+    n: number;
+    spent: boolean;
     script: string;
 }
 
