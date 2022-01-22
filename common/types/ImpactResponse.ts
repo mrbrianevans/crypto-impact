@@ -23,11 +23,10 @@ export interface TransactionCost {
     // This is the main indicator and the default calculation to make
     relativeImpactKwh: number;
 }
-
-export const impactResponseSample: ImpactResponse = {
-    costBreakDown: [{
+function fakeTransaction(): ImpactResponse['costBreakDown'][number] {
+    return {
         transaction: {
-            txid: 'txid',
+            txid: Math.round(Math.random() * 100000000000000000).toString(16),
             version: 0,
             lockTime: Date.now(),
             vin: [],
@@ -38,11 +37,11 @@ export const impactResponseSample: ImpactResponse = {
             value: 'string',
             valueIn: 'string',
             fees: 'string',
-            hex: 'string',
+            hex: Math.round(Math.random() * 100000000000000000).toString(16),
             rbf: false,
             coinSpecificData: {
-                txid: 'string',
-                hash: 'string',
+                txid: Math.round(Math.random() * 100000000000000000).toString(16),
+                hash: Math.round(Math.random() * 100000000000000000).toString(36),
                 version: 0,
                 size: 0,
                 vsize: 0,
@@ -50,11 +49,15 @@ export const impactResponseSample: ImpactResponse = {
                 locktime: 0,
                 vin: [],
                 vout: [],
-                hex: 'string',
+                hex: Math.round(Math.random() * 100000000000000000).toString(16),
             },
         },
-        impactTxs: Math.random(),
-        relativeImpactTxs: Math.random(),
+        impactTxs: Math.round(Math.random() * 10),
+        relativeImpactTxs: Math.round(Math.random() * 5),
         relativeImpactKwh: Math.random()
-    }], totalCostKwh: Math.random(), totalCostTxs: Math.round(Math.random() * 10)
+    }
+}
+export const impactResponseSample: ImpactResponse = {
+    costBreakDown: Array.from(Array(50), (v, i) => fakeTransaction()),
+    totalCostKwh: Math.random() * 10, totalCostTxs: Math.round(Math.random() * 100)
 }

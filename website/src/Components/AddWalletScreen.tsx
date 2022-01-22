@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styles from './AddWalletScreen.module.css'
-import {Badge, Button, Card, Divider, Empty, Input, List, Pagination, Space, Statistic, Timeline} from 'antd';
+import {Badge, Button, Card, Col, Divider, Empty, Input, List, Pagination, Row, Space, Statistic, Timeline} from 'antd';
 import Title from "antd/es/typography/Title";
 import {ImpactResponse} from "../../../common/types/ImpactResponse";
 
@@ -21,6 +21,7 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
     setApiResponse(res)
   }
 
+  const [currentTransaction, setCurrentTransaction] = useState(1)
   return (
     <div className={styles.content}>
       <Title level={3}>Paste your wallet address below to get started</Title>
@@ -28,33 +29,51 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
       <Search size="large" prefix={'#'} placeholder={'Wallet address'} loading={loading} onSearch={callApi}
               allowClear enterButton={'Get impact'} showCount minLength={26}/>
       <Divider/>
-      {apiResponse && <Space direction={'vertical'}>
-          <Space direction={'horizontal'} align={'center'}>
-              <Card title={'Impact'} style={{width: 300}}>
-                  <Statistic title={'Energy consumption (KWh)'} value={apiResponse.totalCostKwh}/>
-              </Card>
-              <Card title={'Impact'} style={{width: 300}}>
-                  <Statistic title={'Total transactions'} value={apiResponse.totalCostTxs}/>
-              </Card>
-          </Space>
+      {apiResponse && <>
+          <Row gutter={[16, {xs: 8, sm: 16, md: 24, lg: 32}]} justify="center">
+              <Col span={2}>
 
-          <Card title={'Cost breakdown - transactions'}>
-              <Timeline mode={'left'}>
-                {apiResponse.costBreakDown.map(item => (
-                  <Timeline.Item label={item.transaction.txid}>{item.relativeImpactKwh} KWh</Timeline.Item>))}
-              </Timeline>
-              <Pagination defaultCurrent={1}/>
-          </Card>
-
-
-          <Card title={'Full API Response'}>
+              </Col>
+              <Col span={8}>
+                  <Card title={'Total energy consumption'}>
+                      <Statistic title={'Kilowatt Hours (kWh)'} value={apiResponse.totalCostKwh}/>
+                  </Card>
+              </Col>
+              <Col span={8}>
+                  <Card title={'Recent energy consumption'}>
+                      <Statistic title={'Kilowatt Hours (kWh) in last 7 days'} value={apiResponse.totalCostKwh / 2.8}/>
+                  </Card>
+              </Col>
+              <Col span={2}>
+                  <Button danger onClick={() => setApiResponse(null)}>Clear</Button>
+              </Col>
+          </Row>
+          <Row gutter={[16, {xs: 8, sm: 16, md: 24, lg: 32}]} style={{marginTop: 16}}>
+              <Col span={24}>
+                  <Card title={'Cost breakdown - transactions'}>
+                      <Timeline mode={'left'}>
+                        {apiResponse.costBreakDown.slice((currentTransaction - 1) * 10, currentTransaction * 10).map(item => (
+                          <Timeline.Item label={item.transaction.txid}>{item.relativeImpactKwh} KWh</Timeline.Item>))}
+                      </Timeline>
+                      <Divider>
+                          <Pagination total={apiResponse.costBreakDown.length - 1} pageSize={10}
+                                      current={currentTransaction} onChange={setCurrentTransaction}/>
+                      </Divider>
+                  </Card>
+              </Col>
+          </Row>
+          <Row gutter={[16, {xs: 8, sm: 16, md: 24, lg: 32}]} style={{marginTop: 16}}>
+              <Col span={24}>
+                  <Card title={'Full API Response'}>
             <pre>
               {JSON.stringify(apiResponse, null, 2)}
             </pre>
-          </Card>
+                  </Card>
+              </Col>
+          </Row>
 
-          <Button danger onClick={() => setApiResponse(null)}>Clear</Button>
-      </Space>
+
+      </>
       }
 
 
