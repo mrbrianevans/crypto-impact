@@ -1,0 +1,10 @@
+{
+  "name": "crypto-impact",
+  "version": "1.0.0",
+  "dependencies": {
+  },
+  "scripts": {
+    "build": "cd website && npm ci && npm run build && cd ../server && npm ci &&  npm run build",
+    "start": "cd server && npm run start"
+  }
+}

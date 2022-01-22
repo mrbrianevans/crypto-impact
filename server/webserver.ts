@@ -22,4 +22,5 @@ app.get('/calculateTransactionCost',async (req, res)=>{
   res.status(200).send(`${energyCost.toFixed(3)} kWh`);
 })
 
-app.listen(5000, ()=>console.log('API web server listening on http://localhost:5000'))
+const port = Number(process.env.PORT) || 5000
+app.listen(port, () => console.log(`API web server listening on http://localhost:${port}`))
