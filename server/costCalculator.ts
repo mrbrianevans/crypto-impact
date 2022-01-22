@@ -7,7 +7,6 @@ import {
     getTransactionsWithStats
 } from "./costApis";
 import {TransactionWithStats} from "common/types/BlockchainStats";
-
 const depthLimit = 10;
 const prLimit = 0.1;
 
@@ -40,6 +39,7 @@ export async function findEnergyCost(address: Address, depth: number, costPC: nu
  * @param depth
  * @param costPC
  */
+
 async function findTransactionCost(transaction: TransactionWithStats, depth: number, costPC:number): Promise<number> {
 
     let energyCost = 1;
@@ -51,6 +51,7 @@ async function findTransactionCost(transaction: TransactionWithStats, depth: num
     let senderAddress = await getAddress(transaction.sender[0]);
 
     // We only want to count the proportion that was ever sent to the sender
+
     let costProportion = transaction.received / Number(senderAddress.totalReceived);
     costPC *= costProportion;
 
