@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styles from './AddWalletScreen.module.css'
-import {Badge, Button, Card, Divider, Empty, Input, List, Space, Statistic} from 'antd';
+import {Badge, Button, Card, Divider, Empty, Input, List, Pagination, Space, Statistic, Timeline} from 'antd';
 import Title from "antd/es/typography/Title";
 import {ImpactResponse} from "../../../common/types/ImpactResponse";
 
@@ -22,7 +22,7 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
 
   return (
     <div className={styles.content}>
-      <Title level={3}>Please put your wallet address below</Title>
+      <Title level={3}>Paste your wallet address below to get started</Title>
 
       <Search size="large" prefix={'#'} placeholder={'Wallet address'} loading={loading} onSearch={callApi}
               allowClear enterButton={'Get impact'} showCount minLength={26}/>
@@ -38,12 +38,11 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
           </Space>
 
           <Card title={'Cost breakdown - transactions'}>
-              <List bordered
-                    dataSource={apiResponse.costBreakDown}
-                    renderItem={transaction => (<Badge.Ribbon text={transaction.transaction.txid}>
-                      <List.Item>{transaction.relativeImpactKwh} KWh</List.Item>
-                    </Badge.Ribbon>)}
-              />
+              <Timeline mode={'left'}>
+                {apiResponse.costBreakDown.map(item => (
+                  <Timeline.Item label={item.transaction.txid}>{item.relativeImpactKwh} KWh</Timeline.Item>))}
+              </Timeline>
+              <Pagination defaultCurrent={1}/>
           </Card>
 
 

@@ -7,11 +7,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@patternfly/pfe-band": "^1.12.2",
-    "@patternfly/pfe-cta": "^1.12.2",
     "@patternfly/pfe-icon": "^1.12.2",
-    "@patternfly/pfe-icon-panel": "^1.12.2",
-    "@patternfly/react-icons": "^4.32.1",
     "antd": "^4.18.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
