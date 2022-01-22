@@ -6,7 +6,7 @@ import {TransactionWithStats} from "common/types/BlockchainStats";
  * Takes an address, finds all transactions and returns the sum of their energy costs
  * @param address
  */
-const depthLimit = 20;
+const depthLimit = 10;
 export async function findEnergyCost(address: Address, depth: number): Promise<number> {
     const transactions = await getTransactionsWithStats(address);
 
@@ -14,22 +14,21 @@ export async function findEnergyCost(address: Address, depth: number): Promise<n
     if(depth>depthLimit){
         return 0;
     }else {
-        for (const transaction of transactions) {
-            const txCost = findTransactionCost(transaction, depth, size);
-            totalCost += txCost;
+        for (const transaction of transactions.slice(0,50)) {
+            const txCost = findTransactionCost(transaction, depth);
+            totalCost += await txCost;
         }
         return totalCost;
     }
-
 }
 
-function findTransactionCost(transaction: TransactionWithStats, depth: number): number {
+async function findTransactionCost(transaction: TransactionWithStats, depth: number): Promise<number> {
 
     let energyCost = 1;
     let costProportion = transaction.received / transaction.totalSent;
     let energyRate = getEnergyRate(transaction.date);
     let energyPerTransaction = getEnergyPerTransaction(energyRate, transaction.block);
-    return (energyPerTransaction*energyCost) + costProportion*findEnergyCost(transaction.sender[0], depth+1);
+    return (energyPerTransaction * energyCost) + costProportion * await findEnergyCost(transaction.sender[0], depth + 1);
 
 }
 
