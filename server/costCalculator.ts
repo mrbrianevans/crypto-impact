@@ -21,7 +21,7 @@ const prLimit = 0.1;
 let gWs_to_kWh = 3.6;
 
 export async function findEnergyCost(address: Address, depth: number, costProportion: number = 1, impactResponse: ImpactResponse): Promise<ImpactResponse> {
-    console.log(depth, costProportion);
+    console.log(depth, costProportion, impactResponse);
     const transactions = (await getTransactionsWithStats(address))
       .filter(tx => !tx.sender.includes(address.address));
     console.log('Found', transactions.length, 'transactions for address', address.address)
@@ -58,14 +58,14 @@ async function updateTransactionCost(transaction: TransactionWithStats, depth: n
 
     const newTransactionCost: TransactionCost = {
         impactTxs: 1.0,
-        relativeImpactKwh: energyPerTransaction * costProportion,
-        relativeImpactTxs: costProportion,
+        relativeImpactKwh: energyPerTransaction * (depth==0 ? 1 : costProportion) / gWs_to_kWh,
+        relativeImpactTxs: (depth==0 ? 1 : costProportion),
         transaction: transaction
     }
 
     // One transaction has happened. We update the sum
-    impactResponse.totalCostKwh = impactResponse.totalCostKwh + newTransactionCost.relativeImpactTxs;
-    impactResponse.totalCostTxs = impactResponse.totalCostTxs + newTransactionCost.relativeImpactKwh;
+    impactResponse.totalCostKwh = impactResponse.totalCostKwh + newTransactionCost.relativeImpactKwh;
+    impactResponse.totalCostTxs = impactResponse.totalCostTxs + newTransactionCost.relativeImpactTxs;
     // We record this transaction.
     impactResponse.costBreakDown.push(newTransactionCost);
 
