@@ -9,7 +9,7 @@ const energyDataset: Array<string> = parse(fs.readFileSync("./datasets/btc-energ
     from_line: 3
 });
 
-const nowKey = "VpMADFdnjyLPT5cIqfYE82iwXNKsHGx0";
+const nowKey = process.env.NOWNODES_KEY || "H3Ja9UsGn2C05fBkD4xupwbed6cFXzRZ";
 
 export async function getAddress(address: string): Promise<Address> {
     try {
