@@ -19,6 +19,10 @@ import Title from "antd/es/typography/Title";
 import {ImpactResponse} from "../../../common/types/ImpactResponse";
 
 const AVG_DAILY_HOUSEHOLD_CONS_KWH = 8;
+// Source: https://www.iea.org/reports/global-energy-co2-status-report-2019/emissions
+const GLOBAL_KGCO2_PER_KWH = 0.475;
+// Source: https://www.carbonindependent.org/sources_aviation.html
+const FLIGHT_KGCO2_PER_HOUR = 90;
 
 const {Search} = Input;
 const {Paragraph} = Typography
@@ -61,6 +65,11 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
                   <Card title={'Equivalent energy consumption'}>
                       <Statistic title={'Days of powering an average UK household'} loading={!apiResponse}
                         value={apiResponse&&(apiResponse.totalCostKwh/AVG_DAILY_HOUSEHOLD_CONS_KWH).toFixed(2)}/>
+                    <Statistic title={'Kilograms of CO2 emissions'} loading={!apiResponse}
+                               value={apiResponse&&(apiResponse.totalCostKwh*GLOBAL_KGCO2_PER_KWH).toFixed(2)}/>
+                    <Statistic title={'Hours of flight (On a 737-400)'} loading={!apiResponse}
+                               value={apiResponse&&(apiResponse.totalCostKwh*GLOBAL_KGCO2_PER_KWH
+                                   /FLIGHT_KGCO2_PER_HOUR).toFixed(2)}/>
                   </Card>
               </Col>
               <Col span={4}>
