@@ -4,7 +4,9 @@ export interface ImpactResponse {
     totalCostTxs: number;
     totalCostKwh: number;
 
-    costBreakDown: TransactionCost[]
+    costBreakDown: TransactionCost[];
+
+    uncountedTxs: number;
 }
 
 export interface TransactionCost {
@@ -59,5 +61,6 @@ function fakeTransaction(): ImpactResponse['costBreakDown'][number] {
 }
 export const impactResponseSample: ImpactResponse = {
     costBreakDown: Array.from(Array(50), (v, i) => fakeTransaction()),
-    totalCostKwh: Math.random() * 10, totalCostTxs: Math.round(Math.random() * 100)
+    totalCostKwh: Math.random() * 10, totalCostTxs: Math.round(Math.random() * 100),
+    uncountedTxs: Math.round(Math.random() * 100)
 }

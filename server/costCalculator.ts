@@ -29,6 +29,11 @@ export async function findEnergyCost(address: Address, depth: number, costPropor
 
     const uncountedTxs = address.txs - Math.min(transactions.length, 50);
 
+    // If depth-0 (main addr), store uncountedTxs in impact response
+    if (depth==0) {
+        impactResponse.uncountedTxs = uncountedTxs;
+    }
+
     // Count all other transactions with tx cost 1
     impactResponse.totalCostTxs += uncountedTxs * costProportion;
     // Energy rate is an approximation of 1.52 kwh per tx

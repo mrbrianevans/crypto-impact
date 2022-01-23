@@ -19,7 +19,8 @@ app.get('/calculateTransactionCost', async (req, res: Response<ImpactResponse>) 
   try {
     const address = await getAddress(walletAddress as string)
     // work out energy cost of wallet address
-    const energyCost = await findEnergyCost(address, 0, 1, {costBreakDown: [], totalCostKwh: 0, totalCostTxs: 0});
+    const energyCost = await findEnergyCost(address, 0, 1,
+        {costBreakDown: [], totalCostKwh: 0, totalCostTxs: 0, uncountedTxs: 0});
     res.status(200).json(energyCost)
   } catch (e) {
     res.status(500).send(e)
