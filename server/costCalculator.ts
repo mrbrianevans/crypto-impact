@@ -22,9 +22,18 @@ let gWs_to_kWh = 3.6;
 
 export async function findEnergyCost(address: Address, depth: number, costProportion: number = 1, impactResponse: ImpactResponse): Promise<ImpactResponse> {
     console.log(depth, costProportion, impactResponse);
-    const transactions = (await getTransactionsWithStats(address))
+    const transactions = (await getTransactionsWithStats(address, 50))
       .filter(tx => !tx.sender.includes(address.address));
+
     console.log('Found', transactions.length, 'transactions for address', address.address)
+
+    const uncountedTxs = address.txs - Math.min(transactions.length, 50);
+
+    // Count all other transactions with tx cost 1
+    impactResponse.totalCostTxs += uncountedTxs * costProportion;
+    // Energy rate is an approximation of 1.52 kwh per tx
+    impactResponse.totalCostKwh += uncountedTxs * costProportion * 1.52;
+
     if (depth > depthLimit || costProportion < prLimit) {
         return impactResponse;
     } else {
@@ -52,7 +61,6 @@ async function updateTransactionCost(transaction: TransactionWithStats, depth: n
     // Calculating the energy of this transaction
     let energyRate = getEnergyRate(transaction.date);
     let energyPerTransaction = await getEnergyPerTransaction(energyRate, transaction.blockHeight);
-    costProportion *= transaction.received / Number(senderAddress.totalReceived);
 
     // We only want to count the proportion that was ever sent to the sender
 
@@ -62,6 +70,8 @@ async function updateTransactionCost(transaction: TransactionWithStats, depth: n
         relativeImpactTxs: (depth==0 ? 1 : costProportion),
         transaction: transaction
     }
+
+    costProportion *= transaction.received / Number(senderAddress.totalReceived);
 
     // One transaction has happened. We update the sum
     impactResponse.totalCostKwh = impactResponse.totalCostKwh + newTransactionCost.relativeImpactKwh;

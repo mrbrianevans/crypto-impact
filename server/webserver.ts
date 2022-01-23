@@ -22,7 +22,7 @@ app.get('/calculateTransactionCost', async (req, res: Response<ImpactResponse>) 
     const energyCost = await findEnergyCost(address, 0, 1, {costBreakDown: [], totalCostKwh: 0, totalCostTxs: 0});
     res.status(200).json(energyCost)
   } catch (e) {
-    res.status(500).json(e)
+    res.status(500).send(e)
   }
 })
 

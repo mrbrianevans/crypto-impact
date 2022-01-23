@@ -31,8 +31,9 @@ export async function getTransaction(txid: string): Promise<Transaction> {
     })).data;
 }
 
-export async function getTransactionsWithStats(address: Address): Promise<TransactionWithStats[]> {
-    let txs = await Promise.all(address.txids.map(txid => getTransaction(txid)));
+
+export async function getTransactionsWithStats(address: Address, limit = 100): Promise<TransactionWithStats[]> {
+    let txs = await Promise.all(address.txids.slice(0,limit).map(txid => getTransaction(txid)));
 
     return txs.map(tx => ({
         ...tx,

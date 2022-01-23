@@ -18,6 +18,8 @@ import {
 import Title from "antd/es/typography/Title";
 import {ImpactResponse} from "../../../common/types/ImpactResponse";
 
+const AVG_DAILY_HOUSEHOLD_CONS_KWH = 8;
+
 const {Search} = Input;
 const {Paragraph} = Typography
 type AddWalletScreenProps = {}
@@ -52,12 +54,13 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
               </Col>
               <Col span={8}>
                   <Card title={'Total energy consumption'}>
-                      <Statistic title={'Kilowatt Hours (kWh)'} value={apiResponse.totalCostKwh}/>
+                      <Statistic title={'Kilowatt Hours (kWh)'} value={apiResponse&&(apiResponse.totalCostKwh).toFixed(2)}/>
                   </Card>
               </Col>
               <Col span={8}>
                   <Card title={'Equivalent energy consumption'}>
-                      <Statistic title={'Days of powering an average UK household'} loading/>
+                      <Statistic title={'Days of powering an average UK household'} loading={!apiResponse}
+                        value={apiResponse&&(apiResponse.totalCostKwh/AVG_DAILY_HOUSEHOLD_CONS_KWH).toFixed(2)}/>
                   </Card>
               </Col>
               <Col span={4}>
@@ -76,6 +79,12 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
                         {apiResponse.costBreakDown.slice((currentTransaction - 1) * 10, currentTransaction * 10).map(item => (
                           <Timeline.Item label={item.transaction.txid}>{item.relativeImpactKwh} KWh</Timeline.Item>))}
                       </Timeline>
+                    {(currentTransaction*10 > apiResponse.costBreakDown.length) && (
+                        <div style={{
+                          display: "flex",
+                          justifyContent: "center"
+                        }}>+ x other transactions</div>
+                    )}
                       <Divider>
                           <Pagination total={apiResponse.costBreakDown.length - 1} pageSize={10}
                                       current={currentTransaction} onChange={setCurrentTransaction}/>
