@@ -3,7 +3,6 @@ import {Collapse, Typography} from "antd";
 import CollapsePanel from "antd/lib/collapse/CollapsePanel";
 
 
-
 type AboutUsBandProps = {}
 
 const AboutUsBand: React.FC<AboutUsBandProps> = (props) => (
@@ -14,7 +13,7 @@ const AboutUsBand: React.FC<AboutUsBandProps> = (props) => (
         We're on a mission to help crypto investors understand the true cost of their transactions.
         Not just the financial cost, but also the <Typography.Text>environmental</Typography.Text> cost.
       </p>
-      <p>By using realtime blockchain data, we model the estimated energy consumption to process the transactions linked
+      <p>By using live blockchain data, we model the estimated energy consumption of processing the transactions linked
         to your Bitcoin wallet.</p>
       <p>Our product can be used by everyday investors to better understand the <Typography.Text
         strong>sustainability</Typography.Text> of their <Typography.Text strong>alternative
