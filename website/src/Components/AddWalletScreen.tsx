@@ -47,8 +47,8 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
   return (
     <div className={styles.content}>
       <Title level={3}>Paste your wallet address below to get started</Title>
-      <Paragraph copyable={{text: 'bc1q9jl08lx23dwfv33wr8qvv5kcfcw8f9dmzcry65'}}>Sample address:
-        bc1q9jl08lx23dwfv33wr8qvv5kcfcw8f9dmzcry65</Paragraph>
+      <Paragraph copyable={{text: '1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v'}}>Sample address:
+        1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v</Paragraph>
       <Search size="large" prefix={'#'} placeholder={'Wallet address'} loading={loading} onSearch={callApi}
               allowClear enterButton={'Get impact'} showCount minLength={26}/>
       <Divider/>
@@ -58,7 +58,8 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
               </Col>
               <Col span={8}>
                   <Card title={'Total energy consumption'}>
-                      <Statistic title={'Kilowatt Hours (kWh)'} value={apiResponse&&(apiResponse.totalCostKwh).toFixed(2)}/>
+                      <Statistic title={'Kilowatt Hours (kWh)'}
+                                 value={apiResponse && (apiResponse.totalCostKwh).toFixed(2)}/>
                   </Card>
               </Col>
               <Col span={8}>

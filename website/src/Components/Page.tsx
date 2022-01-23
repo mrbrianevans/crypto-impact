@@ -22,7 +22,7 @@ const Page: React.FC<PageProps> = (props) => (
       </Layout.Content>
       <Layout.Footer>
         <HostedByGoogle/>
-        <Divider><Typography.Link strong href='https://cryptoimpact.com'>cryptoimpact.tech</Typography.Link> domain
+        <Divider><Typography.Link strong href='https://cryptoimpact.tech'>cryptoimpact.tech</Typography.Link> domain
           registered with <Typography.Link href="https://domain.com"
                                            target="_blank">domain.com</Typography.Link></Divider>
       </Layout.Footer>
