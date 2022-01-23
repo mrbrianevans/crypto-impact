@@ -88,12 +88,12 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
                         {apiResponse.costBreakDown.slice((currentTransaction - 1) * 10, currentTransaction * 10).map(item => (
                           <Timeline.Item label={item.transaction.txid}>{item.relativeImpactKwh} KWh</Timeline.Item>))}
                       </Timeline>
-                    {apiResponse && apiResponse.uncountedTxs && (currentTransaction*10 > apiResponse.costBreakDown.length) && (
+                    {apiResponse && apiResponse.uncountedTxs && (currentTransaction*10 > apiResponse.costBreakDown.length) ? (
                         <div style={{
                           display: "flex",
                           justifyContent: "center"
                         }}>+ {apiResponse.uncountedTxs} other transactions</div>
-                    )}
+                    ):null}
                       <Divider>
                           <Pagination total={apiResponse.costBreakDown.length - 1} pageSize={10}
                                       current={currentTransaction} onChange={setCurrentTransaction}/>
