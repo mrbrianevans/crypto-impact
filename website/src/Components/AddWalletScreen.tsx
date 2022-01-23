@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styles from './AddWalletScreen.module.css'
-import {Badge, Button, Card, Col, Divider, Empty, Input, List, Pagination, Row, Space, Statistic, Timeline} from 'antd';
+import {Button, Card, Col, Collapse, Divider, Empty, Input, Pagination, Row, Statistic, Timeline} from 'antd';
 import Title from "antd/es/typography/Title";
 import {ImpactResponse} from "../../../common/types/ImpactResponse";
 
@@ -11,6 +11,7 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
   const [loading, setLoading] = useState(false)
 
   async function callApi(walletAddress: string) {
+    walletAddress = walletAddress.trim()
     setLoading(true)
     const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : ''
     const res = await fetch(baseUrl + '/calculateTransactionCost?' + new URLSearchParams({walletAddress}))
@@ -29,7 +30,7 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
       <Search size="large" prefix={'#'} placeholder={'Wallet address'} loading={loading} onSearch={callApi}
               allowClear enterButton={'Get impact'} showCount minLength={26}/>
       <Divider/>
-      {apiResponse && <>
+      {apiResponse && apiResponse.costBreakDown && <>
           <Row gutter={[16, {xs: 8, sm: 16, md: 24, lg: 32}]} justify="center">
               <Col span={2}>
 
@@ -64,11 +65,13 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
           </Row>
           <Row gutter={[16, {xs: 8, sm: 16, md: 24, lg: 32}]} style={{marginTop: 16}}>
               <Col span={24}>
-                  <Card title={'Full API Response'}>
-            <pre>
-              {JSON.stringify(apiResponse, null, 2)}
-            </pre>
-                  </Card>
+                  <Collapse>
+                      <Collapse.Panel key={1} header={'Full API Response'}>
+                        <pre>
+                          {JSON.stringify(apiResponse, null, 2)}
+                        </pre>
+                      </Collapse.Panel>
+                  </Collapse>
               </Col>
           </Row>
 
