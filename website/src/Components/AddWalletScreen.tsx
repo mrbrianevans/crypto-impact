@@ -1,10 +1,25 @@
 import React, {useState} from 'react';
 import styles from './AddWalletScreen.module.css'
-import {Button, Card, Col, Collapse, Divider, Empty, Input, Pagination, Row, Statistic, Timeline} from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Collapse,
+  Divider,
+  Empty,
+  Input,
+  Pagination,
+  Row,
+  Space,
+  Statistic,
+  Timeline,
+  Typography
+} from 'antd';
 import Title from "antd/es/typography/Title";
 import {ImpactResponse} from "../../../common/types/ImpactResponse";
 
 const {Search} = Input;
+const {Paragraph} = Typography
 type AddWalletScreenProps = {}
 const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
   const [apiResponse, setApiResponse] = useState<ImpactResponse | null>(null)
@@ -26,14 +41,14 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
   return (
     <div className={styles.content}>
       <Title level={3}>Paste your wallet address below to get started</Title>
-
+      <Paragraph copyable={{text: 'bc1q9jl08lx23dwfv33wr8qvv5kcfcw8f9dmzcry65'}}>Sample address:
+        bc1q9jl08lx23dwfv33wr8qvv5kcfcw8f9dmzcry65</Paragraph>
       <Search size="large" prefix={'#'} placeholder={'Wallet address'} loading={loading} onSearch={callApi}
               allowClear enterButton={'Get impact'} showCount minLength={26}/>
       <Divider/>
       {apiResponse && apiResponse.costBreakDown && <>
           <Row gutter={[16, {xs: 8, sm: 16, md: 24, lg: 32}]} justify="center">
-              <Col span={2}>
-
+              <Col span={4}>
               </Col>
               <Col span={8}>
                   <Card title={'Total energy consumption'}>
@@ -41,12 +56,17 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
                   </Card>
               </Col>
               <Col span={8}>
-                  <Card title={'Recent energy consumption'}>
-                      <Statistic title={'Kilowatt Hours (kWh) in last 7 days'} value={apiResponse.totalCostKwh / 2.8}/>
+                  <Card title={'Equivalent energy consumption'}>
+                      <Statistic title={'Days of powering an average UK household'} loading/>
                   </Card>
               </Col>
-              <Col span={2}>
-                  <Button danger onClick={() => setApiResponse(null)}>Clear</Button>
+              <Col span={4}>
+                  <Space direction={'vertical'}>
+                      <Button danger onClick={() => setApiResponse(null)}>Clear</Button>
+                      <Card title={'Sustainable alternative'} size={'small'}>
+                          <Typography.Link href="https://solarcoin.org/" target={"_blank"}>SolarCoin</Typography.Link>
+                      </Card>
+                  </Space>
               </Col>
           </Row>
           <Row gutter={[16, {xs: 8, sm: 16, md: 24, lg: 32}]} style={{marginTop: 16}}>
@@ -80,7 +100,7 @@ const AddWalletScreen: React.FC<AddWalletScreenProps> = (props) => {
       }
 
 
-      {!apiResponse && <Empty />}
+      {!apiResponse && <Empty style={{minHeight: 250}}/>}
     </div>
   );
 };
